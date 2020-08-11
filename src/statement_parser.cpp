@@ -5,7 +5,7 @@
 
 
 
-bool parse_statement(Token *result, Token_Linked_List *remaining_tokens_list) {
+bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list) {
   Token *current_token = remaining_tokens_list->first;
 
   while(current_token->type != eol) {
@@ -44,7 +44,7 @@ bool parse_statements(Token_Linked_List *resulting_list, Token_Linked_List token
   Token_Linked_List parsed = tokens;
   while(parsed.first->type != eol) {
     Token *result = new Token();
-    bool succeeded = parse_statement(result, &parsed);
+    bool succeeded = parse_one_statement(result, &parsed);
 
     if(succeeded) {
       if(resulting_list_initialized) {
