@@ -14,21 +14,36 @@ int main() {
 
   try {
     Token_Linked_List tokens = lex_file((char*)"./examples/basicstatements.lang", &symbols_by_id, &symbols_by_name);
-    print_all_tokens_after(*tokens.first, &symbols_by_id);
+    //print_all_tokens_after(*tokens.first, &symbols_by_id);
 
-    Token result;
-    Token_Linked_List parsed = tokens;
+    Token_Linked_List resulting_list;
 
-    bool succeeded = parse_statement(&result, &parsed);
-    
-    if(succeeded) {
-      printf("SUCCESS");
-    } else {
-      printf("FAILED\n");
+    {
+      bool resulting_list_initialized = false;
+      Token_Linked_List parsed = tokens;
+      while(parsed.first->type != eol) {
+        Token *result = new Token();
+        bool succeeded = parse_statement(result, &parsed);
+
+        if(succeeded) {
+          if(resulting_list_initialized) {
+            resulting_list.last->next = result;
+            resulting_list.last = result;
+          } else {
+            resulting_list.first = result;
+            resulting_list.last = result;
+            resulting_list_initialized = true;
+          }
+        } else {
+          printf("Failed to parse statement.\n"); // @Incomplete: put a better error message here and exit
+        }
+      }
     }
 
+
     printf("PRINTING ALL TOKENS AFTER\n");
-    print_all_tokens_after(result, &symbols_by_id, 0);
+    print_all_tokens_after(*resulting_list.first, &symbols_by_id, 0);
+
 
   } catch(const std::exception& e) {
     printf("Error: %s\n", e.what());

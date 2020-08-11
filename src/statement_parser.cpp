@@ -6,7 +6,6 @@
 
 
 bool parse_statement(Token *result, Token_Linked_List *remaining_tokens_list) {
-
   Token *current_token = remaining_tokens_list->first;
 
   while(current_token->type != eol) {
