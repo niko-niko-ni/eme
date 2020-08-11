@@ -13,7 +13,7 @@ int main() {
   std::unordered_map<std::string, Symbol_Data> symbols_by_name;
 
   try {
-    Token_Linked_List tokens = lex_file((char*)"./examples/basicstatements.lang", &symbols_by_id, &symbols_by_name);
+    Token_Linked_List tokens = lex_file((char*)"./examples/basicstatements.eme", &symbols_by_id, &symbols_by_name);
     //print_all_tokens_after(*tokens.first, &symbols_by_id);
 
     Token_Linked_List resulting_list;

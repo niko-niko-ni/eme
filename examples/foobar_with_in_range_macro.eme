@@ -1,6 +1,6 @@
 
 
-defmacro in_range = {
+in_range := defmacro {
   _, i := pop_as Symbol;
   _, amount := pop_as Symbol;
   _, code_block := pop_as Code_Block;
@@ -21,7 +21,7 @@ defmacro in_range = {
   return output.finish;
 };
 
-defun foobar = (n: int) -> void {
+foobar := defmacro (n: int) -> void {
     in_range i n {
         if i % 2 == 0 {
             print “FOO”;
