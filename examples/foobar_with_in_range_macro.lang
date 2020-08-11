@@ -1,0 +1,37 @@
+
+
+defmacro in_range = {
+  _, i := pop_as Symbol;
+  _, amount := pop_as Symbol;
+  _, code_block := pop_as Code_Block;
+
+  output : String_Builder;
+
+  output.add "for(";
+  output.add i.str;
+  output.add ":= 0;";
+  output.add i.str;
+  output.add "<";
+  output.add amount.str;
+  output.add ";";
+  output.add i.str;
+  output.add "++;)";
+  output.add code_block.str;
+
+  return output.finish;
+};
+
+defun foobar = (n: int) -> void {
+    in_range i n {
+        if i % 2 == 0 {
+            print “FOO”;
+        };
+        if (i % 3 == 0) {
+            print “BAR”;
+        };
+        if (i % 5 == 0) {
+          print “BAZ”;
+        };
+        print “\n”;
+    };
+};

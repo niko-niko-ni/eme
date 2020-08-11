@@ -1,0 +1,25 @@
+
+
+defun negated = (x: bool) -> bool {
+  return !x;
+};
+
+defun main = () -> void {
+  x := false;
+  y := negated (negated !x); #comment
+
+  if y {
+    print "test";
+  };
+
+};
+
+
+# "defun negated =" PAREN{"x: bool"} "-> bool" CURLY{"return !x;"}
+#
+# "defun main =" PAREN{""} "-> void" CURLY{"x := false; y:= negated"}
+#
+#
+#
+#
+#

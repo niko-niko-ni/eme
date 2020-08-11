@@ -1,0 +1,14 @@
+defun foobar = (n: int) -> void {
+    in_range i n {
+        if i % 2 == 0 {
+            print “FOO”;
+        };
+        if (i % 3 == 0) {
+            print “BAR”;
+        };
+        if (i % 5 == 0) {
+          print “BAZ”;
+        };
+        print “\n”;
+    };
+};
