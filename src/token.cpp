@@ -22,7 +22,7 @@ void print_token(Token token, int indentation) {
       printf("%*c\bSYMBOL %s\n\n", indentation, ' ', symbols_by_id.at(token.data.symbol).name->c_str());
       break;
     case literal_int:
-      printf("%*c\bLITERAL_INT %I64i\n\n", indentation, ' ', token.data.literal_int);
+      printf("%*c\bLITERAL_INT %lu\n\n", indentation, ' ', token.data.literal_int);
       break;
     case literal_string:
       printf("%*c\bLITERAL_STRING %s\n\n", indentation, ' ', token.data.literal_string->c_str());
