@@ -9,7 +9,7 @@ bool parse_statement(Token *result, Token_Linked_List *remaining_tokens_list) {
 
   Token *current_token = remaining_tokens_list->first;
 
-  while(current_token->type != null) {
+  while(current_token->type != eol) {
     if(current_token->type == syntax && current_token->data.syntax == ';') {
       Token_Linked_List sub_tokens;
       sub_tokens.first = remaining_tokens_list->first;
@@ -18,7 +18,7 @@ bool parse_statement(Token *result, Token_Linked_List *remaining_tokens_list) {
 
       current_token->character = -1;
       current_token->line = -1;
-      current_token->type = null;
+      current_token->type = eol;
 
       sub_tokens.last = current_token;
 
@@ -43,7 +43,7 @@ bool parse_block(Token *result, Token_Linked_List *remaining_tokens_list) {
 
   if(remaining_tokens_list->first == '}') {
     remaining_tokens_list->first = remaining_tokens_list->first->next;
-    result->type = null;
+    result->type = eol;
     result->character = -1;
     result->line = -1;
     return true;
@@ -54,10 +54,10 @@ bool parse_block(Token *result, Token_Linked_List *remaining_tokens_list) {
   Token_Linked_List statements;
   statements.first = current_token;
 
-  while(current_token->type != null && !(current_token->type == syntax && current_token->data.syntax == '}')) {
+  while(current_token->type != eol && !(current_token->type == syntax && current_token->data.syntax == '}')) {
   }
 
-  { // remove first token (which is null) from the linked list
+  { // remove first token (which is eol) from the linked list
     Token *new_first_token = tokens.first->next;
     delete tokens.first;
     tokens.first = new_first_token;

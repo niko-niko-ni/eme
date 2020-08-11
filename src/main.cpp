@@ -18,12 +18,15 @@ int main() {
 
     Token result;
     Token_Linked_List parsed = tokens;
+
     bool succeeded = parse_statement(&result, &parsed);
+    
     if(succeeded) {
-      print_token(result, &symbols_by_id, 0);
+      printf("SUCCESS");
     } else {
       printf("FAILED\n");
     }
+
     printf("PRINTING ALL TOKENS AFTER\n");
     print_all_tokens_after(result, &symbols_by_id, 0);
 

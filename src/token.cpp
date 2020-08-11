@@ -30,8 +30,8 @@ void print_token(Token token, std::vector<Symbol_Data> *symbols_by_id, int inden
     case literal_bool:
       printf("%*c\bLITERAL_BOOL %s\n\n", indentation, ' ', token.data.literal_bool ? "true" : "false");
       break;
-    case null:
-      printf("%*c\bNULL\n\n", indentation, ' ');
+    case eol:
+      printf("%*c\beol\n\n", indentation, ' ');
       break;
     case statement:
       printf("%*c\bSTATEMENT:\n\n", indentation, ' ');
@@ -44,7 +44,7 @@ void print_token(Token token, std::vector<Symbol_Data> *symbols_by_id, int inden
 void print_all_tokens_after(Token token, std::vector<Symbol_Data> *symbols_by_id, int indentation) {
   Token *current_token = &token;
 
-  while(current_token->type != null) {
+  while(current_token->type != eol) {
     print_token(*current_token, symbols_by_id, indentation);
     current_token = current_token->next;
   }

@@ -5,7 +5,7 @@
 
 enum Token_Type {
   // Used to denote the end of a list of tokens
-  null,
+  eol,
 
   // Tokens outputted by the lexer
   symbol,

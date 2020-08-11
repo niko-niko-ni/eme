@@ -34,7 +34,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, std::vector<Symb
   tokens.first = new Token();
   tokens.first->character = 0;
   tokens.first->line = 0;
-  tokens.first->type = null;
+  tokens.first->type = eol;
 
   tokens.last = tokens.first;
 
@@ -223,9 +223,9 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, std::vector<Symb
     }
   }
 
-  { // add null token as last token
+  { // add eol token as last token
     Token *end_token = new Token();
-    end_token->type = null;
+    end_token->type = eol;
     end_token->line = -1;
     end_token->character = -1;
 
@@ -233,7 +233,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, std::vector<Symb
     tokens.last = end_token;
   }
 
-  { // remove first token (which is null) from the linked list
+  { // remove first token (which is eol) from the linked list
     Token *new_first_token = tokens.first->next;
     delete tokens.first;
     tokens.first = new_first_token;
