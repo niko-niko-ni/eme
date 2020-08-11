@@ -6,7 +6,7 @@
 
 const uint INDENTATION_INCREASE = 2;
 
-void print_token(Token token, std::vector<Symbol_Data> *symbols_by_id, int indentation) {
+void print_token(Token token, int indentation) {
   bool is_using_indentation = true;
   if(indentation < 0) {
     is_using_indentation = false;
@@ -19,7 +19,7 @@ void print_token(Token token, std::vector<Symbol_Data> *symbols_by_id, int inden
       printf("%*c\bSYNTAX %c\n\n", indentation, ' ', token.data.syntax);
       break;
     case symbol:
-      printf("%*c\bSYMBOL %s\n\n", indentation, ' ', symbols_by_id->at(token.data.symbol).name->c_str());
+      printf("%*c\bSYMBOL %s\n\n", indentation, ' ', symbols_by_id.at(token.data.symbol).name->c_str());
       break;
     case literal_int:
       printf("%*c\bLITERAL_INT %I64i\n\n", indentation, ' ', token.data.literal_int);
@@ -31,21 +31,21 @@ void print_token(Token token, std::vector<Symbol_Data> *symbols_by_id, int inden
       printf("%*c\bLITERAL_BOOL %s\n\n", indentation, ' ', token.data.literal_bool ? "true" : "false");
       break;
     case eol:
-      printf("%*c\beol\n\n", indentation, ' ');
+      printf("%*c\bEOL TOKEN\n\n", indentation, ' ');
       break;
     case statement:
       printf("%*c\bSTATEMENT:\n\n", indentation, ' ');
 
       uint new_indentation = is_using_indentation ? indentation+INDENTATION_INCREASE : -1;
-      print_all_tokens_after(*token.data.sub_tokens.first, symbols_by_id, new_indentation);
+      print_all_tokens_after(*token.data.sub_tokens.first, new_indentation);
   }
 }
 
-void print_all_tokens_after(Token token, std::vector<Symbol_Data> *symbols_by_id, int indentation) {
+void print_all_tokens_after(Token token, int indentation) {
   Token *current_token = &token;
 
   while(current_token->type != eol) {
-    print_token(*current_token, symbols_by_id, indentation);
+    print_token(*current_token, indentation);
     current_token = current_token->next;
   }
 }

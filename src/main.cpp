@@ -1,4 +1,3 @@
-#include <unordered_map>
 #include <vector>
 #include <iostream>
 #include "types.h"
@@ -8,12 +7,8 @@
 #include "statement_parser.h"
 
 int main() {
-
-  std::vector<Symbol_Data> symbols_by_id;
-  std::unordered_map<std::string, Symbol_Data> symbols_by_name;
-
   try {
-    Token_Linked_List tokens = lex_file((char*)"./examples/basicstatements.eme", &symbols_by_id, &symbols_by_name);
+    Token_Linked_List tokens = lex_file((char*)"./examples/basicstatements.eme");
     //print_all_tokens_after(*tokens.first, &symbols_by_id);
 
     Token_Linked_List resulting_list;
@@ -42,7 +37,7 @@ int main() {
 
 
     printf("PRINTING ALL TOKENS AFTER\n");
-    print_all_tokens_after(*resulting_list.first, &symbols_by_id, 0);
+    print_all_tokens_after(*resulting_list.first, 0);
 
 
   } catch(const std::exception& e) {

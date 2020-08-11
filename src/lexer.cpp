@@ -29,7 +29,7 @@ Token* syntax_token(char ch, int current_line, int current_char) {
   return token;
 }
 
-Token_Linked_List lex_stream(std::basic_iostream<char>* stream, std::vector<Symbol_Data> *symbols_by_id, std::unordered_map<std::string, Symbol_Data> *symbols_by_name) { // @Refactor: this function is a little janky, it's a finite state machine but some things are handled weirdly, like how boolean literals start out being processed as a symbol, or how there are some booleans like escaping_character which only matter if others are true.
+Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: this function is a little janky, it's a finite state machine but some things are handled weirdly, like how boolean literals start out being processed as a symbol, or how there are some booleans like escaping_character which only matter if others are true.
   Token_Linked_List tokens;
   tokens.first = new Token();
   tokens.first->character = 0;
@@ -121,21 +121,21 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, std::vector<Symb
           token->character = current_string_start_char;
           token->data.symbol = 0;
 
-          std::unordered_map<std::string, Symbol_Data>::const_iterator got = symbols_by_name->find(*current_string);
-          if (got == symbols_by_name->end()) { // if the symbol doesn't exist in symbols_by_name
+          std::unordered_map<std::string, Symbol_Data>::const_iterator got = symbols_by_name.find(*current_string);
+          if (got == symbols_by_name.end()) { // if the symbol doesn't exist in symbols_by_name
 
             Symbol_Data symbol_data;
-            Symbol symbol_id = symbols_by_id->size();
+            Symbol symbol_id = symbols_by_id.size();
             token->data.symbol = symbol_id;
             symbol_data.id = symbol_id;
 
             symbol_data.name = current_string;
             delete_current_string = false;
 
-            symbols_by_id->push_back(symbol_data);
+            symbols_by_id.push_back(symbol_data);
 
             try {
-              (*symbols_by_name)[*current_string] = symbol_data;
+              symbols_by_name[*current_string] = symbol_data;
             } catch (const std::exception& e) {
               printf("Error in lex_stream: %s\n", e.what());
               exit(1);
@@ -242,14 +242,14 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, std::vector<Symb
   return tokens;
 }
 
-Token_Linked_List lex_file(char filename[], std::vector<Symbol_Data> *symbols_by_id, std::unordered_map<std::string, Symbol_Data> *symbols_by_name) {
+Token_Linked_List lex_file(char filename[]) {
   std::fstream fin(filename, std::fstream::in);
-  Token_Linked_List result = lex_stream(&fin, symbols_by_id, symbols_by_name);
+  Token_Linked_List result = lex_stream(&fin);
   fin.close();
   return result;
 }
 
-Token_Linked_List lex_string(char str[], std::vector<Symbol_Data> *symbols_by_id, std::unordered_map<std::string, Symbol_Data> *symbols_by_name) {
+Token_Linked_List lex_string(char str[]) {
   std::stringstream s((std::string)str);
-  return lex_stream(&s, symbols_by_id, symbols_by_name);
+  return lex_stream(&s);
 }

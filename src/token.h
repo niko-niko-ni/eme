@@ -52,6 +52,6 @@ struct Token {
 
 // If indentation is less than 0, don't indent at all, even for curly braces, statements, etc.
 // If indentation is anything else, do normal indentation.
-void print_token(Token token, std::vector<Symbol_Data> *symbols_by_id, int indentation=0);
+void print_token(Token token, int indentation=0);
 
-void print_all_tokens_after(Token token, std::vector<Symbol_Data> *symbols_by_id, int indentation=0);
+void print_all_tokens_after(Token token, int indentation=0);
