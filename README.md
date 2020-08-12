@@ -11,4 +11,12 @@ The word "eme" means "language" or "tongue" in Sumerian, the oldest known writte
 
 ### Why are macros so important?
 
-Macros allow you to extend the language as you're writing your program. As your program grows, the language grows with it. For more information about this style of programming read [Paul Graham's essay "Programming Bottom-Up"](http://www.paulgraham.com/progbot.html). Many of programming language examples make use of macros, such as the list comprehension example. (found in `lcomp.eme`)
+Macros allow you to extend the language as you're writing your program. As your program grows, the language grows with it. For more information about this style of programming read [Paul Graham's essay "Programming Bottom-Up"](http://www.paulgraham.com/progbot.html). Some relevant quotes from that essay are provided below:
+
+> [When] language and program fit one another well, you end up with code which is clear, small, and efficient.
+
+> In typical code, once you abstract out the parts which are merely bookkeeping, what's left is much shorter; the higher you build up the language, the less distance you will have to travel from the top down to it.
+
+> By making the language do more of the work, bottom up design yields programs which are smaller and more agile. A shorter program doesn't have to be divided into so many components, and fewer components means programs which are easier to read or modify. Fewer components also mean fewer connections between components, and thus less chance for errors there.
+
+Many of programming language examples found in `examples/` make use of macros, such as the list comprehension example found in `examples/lcomp.eme`.
