@@ -82,6 +82,8 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
           reading_single_line_comment = true;
         } else if(ch == '"') {
           reading_string = true;
+          current_string_start_line = current_line;
+          current_string_start_char = current_char;
         } else {
           // add token
           Token *new_last_token = syntax_token(ch, current_line, current_char);
