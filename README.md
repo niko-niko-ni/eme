@@ -19,4 +19,4 @@ Macros allow you to extend the language as you're writing your program. As your 
 
 > By making the language do more of the work, bottom up design yields programs which are smaller and more agile. A shorter program doesn't have to be divided into so many components, and fewer components means programs which are easier to read or modify. Fewer components also mean fewer connections between components, and thus less chance for errors there.
 
-Many of programming language examples found in `examples/` make use of macros, such as the list comprehension example found in `examples/lcomp.eme`.
+Many of the programming language examples found in `examples/` make use of macros, such as the list comprehension example found in `examples/lcomp.eme`.
