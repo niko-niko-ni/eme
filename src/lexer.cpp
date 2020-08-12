@@ -22,7 +22,7 @@ Token* syntax_token(char ch, int current_line, int current_char) {
     printf("Error: parsing a ' \" ' character as a syntax token, likely because it was placed directly next to a symbol or literal.");
   }
   Token *token = new Token();
-  token->type = syntax; // @Incomplete: handle multiple literal types
+  token->type = token_syntax; // @Incomplete: handle multiple literal types
   token->line = current_line;
   token->character = current_char;
   token->data.syntax = ch;
@@ -34,7 +34,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
   tokens.first = new Token();
   tokens.first->character = 0;
   tokens.first->line = 0;
-  tokens.first->type = eol;
+  tokens.first->type = token_eol;
 
   tokens.last = tokens.first;
 
@@ -106,7 +106,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
         // boolean literal
         if(current_string->compare("true") == 0 || current_string->compare("false") == 0) {
           Token *token = new Token();
-          token->type = literal_bool;
+          token->type = token_literal_bool;
           token->line = current_line;
           token->character = current_string_start_char;
           token->data.literal_bool = current_string->compare("true");
@@ -116,7 +116,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
           tokens.last = token;
         } else { // add_symbol_token
           Token *token = new Token();
-          token->type = symbol;
+          token->type = token_symbol;
           token->line = current_line;
           token->character = current_string_start_char;
           token->data.symbol = 0;
@@ -178,7 +178,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
 
         { // add_literal_token
           Token *token = new Token();
-          token->type = literal_int; // @Incomplete: handle multiple literal types
+          token->type = token_literal_int; // @Incomplete: handle multiple literal types
           token->line = current_line;
           token->character = current_string_start_char;
           try {
@@ -206,7 +206,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
         Token *token = new Token();
         token->character = current_string_start_char;
         token->line = current_string_start_line;
-        token->type = literal_string;
+        token->type = token_literal_string;
         token->data.literal_string = current_string;
 
         tokens.last->next = token;
@@ -223,9 +223,9 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
     }
   }
 
-  { // add eol token as last token
+  { // add token_eol token as last token
     Token *end_token = new Token();
-    end_token->type = eol;
+    end_token->type = token_eol;
     end_token->line = -1;
     end_token->character = -1;
 
@@ -233,7 +233,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
     tokens.last = end_token;
   }
 
-  { // remove first token (which is eol) from the linked list
+  { // remove first token (which is token_eol) from the linked list
     Token *new_first_token = tokens.first->next;
     delete tokens.first;
     tokens.first = new_first_token;

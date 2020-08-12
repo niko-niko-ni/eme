@@ -5,22 +5,22 @@
 
 enum Token_Type {
   // Used to denote the end of a list of tokens
-  eol,
+  token_eol,
 
   // Tokens outputted by the lexer
-  symbol,
-  syntax,
-  literal_uint,
-  literal_int,
-  literal_bool,
-  literal_string,
+  token_symbol,
+  token_syntax,
+  token_literal_uint,
+  token_literal_int,
+  token_literal_bool,
+  token_literal_string,
 
   // Meta-tokens which have a tree-like structure (contain in and of themselves another linked list of tokens)
   // These are created by the statement parser
-  statement,
-  block_curly,
-  expr_parentheses,
-  expr_bracket
+  token_statement,
+  token_block_curly,
+  token_expr_parentheses,
+  token_expr_bracket
 
 };
 
