@@ -4,7 +4,7 @@
 #include "symbol.h"
 
 
-const uint INDENTATION_INCREASE = 2;
+const uint INDENTATION_INCREASE = 4;
 
 void print_token(Token token, int indentation) {
   bool is_using_indentation = true;
