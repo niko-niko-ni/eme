@@ -4,3 +4,4 @@ str := "test";
 x += 50;
 print x;
 print str;
+print (x + 1);

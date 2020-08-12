@@ -1,4 +1,5 @@
 #include "statement_parser.h"
+#include <iostream>
 
 #include "symbol.h"
 #include "token.h"
@@ -25,9 +26,17 @@ bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list
       result->line = sub_tokens.first->line;
       result->type = token_statement;
 
+
       result->data.sub_tokens = sub_tokens;
 
       return true;
+    } else if (current_token->type == token_syntax && (current_token->data.syntax == '(' || (current_token->data.syntax == '{' || current_token->data.syntax == '['))) {
+      int nextNum = parse_parentheses(current_token);
+      Token *replace_token = current_token;
+      for(int i = 0; i <= nextNum; i++) {
+        replace_token = replace_token->next;
+      }
+      current_token->next = replace_token;
     }
 
     // @Incomplete: deal with if an end curly brace, bracket, or parentheses is encountered outside of its context
@@ -38,6 +47,34 @@ bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list
   return false;
 }
 
+int parse_parentheses(Token *token) {
+    Token *current_token = token->next;
+    uint ret = 1;
+    Token_Linked_List sub_tokens;
+    token->type = token_expr_parentheses; 
+    token->data.sub_tokens = sub_tokens;
+    Token* eol;
+    eol->character = -1;
+    eol->line = -1;
+    eol->type = token_eol;
+    sub_tokens.first = eol;
+    bool first = true;
+    while (current_token->data.syntax != token->data.syntax && current_token->type != token_eol) {
+      if (current_token->type == token_syntax && (current_token->data.syntax == '(' || (current_token->data.syntax == '{' || current_token->data.syntax == '['))) {
+        ret = ret + parse_parentheses(current_token);
+      }
+      if (first) {
+        sub_tokens.first = current_token;
+      } else {
+        sub_tokens.last->next = current_token;
+      }
+
+      ret++;
+      current_token  = current_token->next;
+    }
+    token->data.sub_tokens = sub_tokens;
+    sub_tokens.last = eol;
+}
 
 bool parse_statements(Token_Linked_List *resulting_list, Token_Linked_List tokens) {
   bool resulting_list_initialized = false;
