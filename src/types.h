@@ -7,8 +7,10 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
-#if defined (_MSC_VER)
-typedef uint_fast32_t uint;
+#if defined uint
+#include <inttypes.h>
+#else
+typedef unsigned int uint;
 #endif
 
 typedef int8_t   i8;

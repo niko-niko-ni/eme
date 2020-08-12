@@ -3,12 +3,6 @@
 #include "types.h"
 #include "symbol.h"
 
-#if defined uint
-#include <inttypes.h>
-#else
-typedef unsigned int uint;
-#endif
-
 const uint INDENTATION_INCREASE = 4;
 
 void print_token(Token token, int indentation) {
