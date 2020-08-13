@@ -9,6 +9,10 @@ Examples of the programming language's use can be found in the `examples/` direc
 
 The word "eme" means "language" or "tongue" in Sumerian, the oldest known written language.
 
+### I've used macros before in C and C++ and they don't seem so special! What makes eme different?
+
+In languages like C and C++ macros are very limited and have their own special syntax. In eme, macros are just code that is run at compile-time, meaning they have full access to the programming language and the compile-time environment. They can define new functions, datatypes, and macros, making them *far* more powerful than macros in most other languages.
+
 ### Why are macros so important?
 
 Macros allow you to extend the language as you're writing your program. As your program grows, the language grows with it. For more information about this style of programming read [Paul Graham's essay "Programming Bottom-Up"](http://www.paulgraham.com/progbot.html). Some relevant quotes from that essay are provided below:
