@@ -7,7 +7,7 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
-#if defined uint
+#ifdef uint
 #include <inttypes.h>
 #else
 typedef unsigned int uint;
