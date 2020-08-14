@@ -7,7 +7,10 @@
 #include "types.h"
 #include "symbol.h"
 #include "token.h"
+#include "errors.h"
+#include "files.h"
 
+// @Incomplete MAJOR PROBLEM: We aren't adding file_id data to tokens yet! This is because it might cause problems interfering with literals WIP meta-token parser. file_id data is already used in error messages, just update token and AST objects to include the data, as well as make sure it is set wherever the line and character are set.
 
 bool is_valid_symbol_char(char ch) {
   return isalpha(ch) || isdigit(ch) || ch == '_';
@@ -17,9 +20,9 @@ bool is_valid_symbol_start_char(char ch) {
   return isalpha(ch) || ch == '_';
 }
 
-Token* syntax_token(char ch, int current_line, int current_char) {
+Token* syntax_token(char ch, int current_file_id, int current_line, int current_char) {
   if(ch == '"') {
-    printf("Error: parsing a ' \" ' character as a syntax token, likely because it was placed directly next to a symbol or literal.");
+    print_error_message("Incorrectly parsing a ' \" ' character as a syntax token, likely because it was placed directly next to a symbol or literal.", current_file_id, current_line, current_char);
   }
   Token *token = new Token();
   token->type = token_syntax; // @Incomplete: handle multiple literal types
@@ -29,7 +32,7 @@ Token* syntax_token(char ch, int current_line, int current_char) {
   return token;
 }
 
-Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: this function is a little janky, it's a finite state machine but some things are handled weirdly, like how boolean literals start out being processed as a symbol, or how there are some booleans like escaping_character which only matter if others are true.
+Token_Linked_List lex_stream(std::basic_iostream<char>* stream, int file_id) { // @Refactor: this function is a little janky, it's a finite state machine but some things are handled weirdly, like how boolean literals start out being processed as a symbol, or how there are some booleans like escaping_character which only matter if others are true.
   Token_Linked_List tokens;
   tokens.first = new Token();
   tokens.first->character = 0;
@@ -86,7 +89,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
           current_string_start_char = current_char;
         } else {
           // add token
-          Token *new_last_token = syntax_token(ch, current_line, current_char);
+          Token *new_last_token = syntax_token(ch, file_id, current_line, current_char);
           tokens.last->next = new_last_token;
           tokens.last = new_last_token;
         }
@@ -139,7 +142,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
             try {
               symbols_by_name[*current_string] = symbol_data;
             } catch (const std::exception& e) {
-              printf("Error in lex_stream: %s\n", e.what());
+              printf("Compiler internal error in lex_stream: %s", e.what());
               exit(1);
             }
 
@@ -163,7 +166,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
         current_string = new std::string();
         if(!isspace(ch)) {
           // add token
-          Token *new_last_token = syntax_token(ch, current_line, current_char);
+          Token *new_last_token = syntax_token(ch, file_id, current_line, current_char);
           tokens.last->next = new_last_token;
           tokens.last = new_last_token;
         }
@@ -186,7 +189,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
           try {
             token->data.literal_int = std::stoi(*current_string);
           } catch(...) {
-            printf("Error converting assumed int literal '%s' to int.\n", current_string->c_str());
+            printf("Error converting assumed int literal (because it starts with a digit) to int.", file_id, current_line, current_string_start_char);
           }
 
           // add token
@@ -198,7 +201,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
         current_string = new std::string();
         if(!isspace(ch)) {
           // add token
-          Token *new_last_token = syntax_token(ch, current_line, current_char);
+          Token *new_last_token = syntax_token(ch, file_id, current_line, current_char);
           tokens.last->next = new_last_token;
           tokens.last = new_last_token;
         }
@@ -245,13 +248,15 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream) { // @Refactor: 
 }
 
 Token_Linked_List lex_file(char filename[]) {
+  filenames.push_back(filename);
+  int file_id = filenames.size()-1;
   std::fstream fin(filename, std::fstream::in);
-  Token_Linked_List result = lex_stream(&fin);
+  Token_Linked_List result = lex_stream(&fin, file_id);
   fin.close();
   return result;
 }
 
-Token_Linked_List lex_string(char str[]) {
+Token_Linked_List lex_string(char str[], int file_id) {
   std::stringstream s((std::string)str);
-  return lex_stream(&s);
+  return lex_stream(&s, file_id);
 }
