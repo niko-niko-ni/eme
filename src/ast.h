@@ -37,10 +37,16 @@ struct Ast_Node {
       Ast_Node *value;
     } decl_with_set;
 
-    Token_Linked_List sub_tokens;
+    struct Token_Linked_List sub_tokens;
     Ast_Node_Linked_List sub_nodes;
   } data;
   Ast_Node *next;
+};
+
+struct Declaration_Data {
+  Ast_Node *block;
+  Ast_Node *declaration;
+  //Type_Info type;
 };
 
 void print_node(Ast_Node token, int indentation=0);

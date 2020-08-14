@@ -1,7 +1,6 @@
 #pragma once
 
 #include "types.h"
-#include "symbol.h"
 
 enum Token_Type {
   // Used to denote the end of a list of tokens
@@ -30,6 +29,8 @@ struct Token_Linked_List {
   Token *first;
   Token *last;
 };
+
+#include "symbol.h"
 
 // Linked list of tokens
 struct Token {
