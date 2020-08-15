@@ -1,7 +1,7 @@
 
 x := 0; # comment here
 str := "test";
-x += 50;
+x" += 50;
 print x;
 print str;
 x = (x + 1);

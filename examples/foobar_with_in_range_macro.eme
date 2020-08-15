@@ -7,7 +7,7 @@ in_range := defmacro {
 
   output : String_Builder;
 
-  output.add "for(";
+  output.add "for(int";
   output.add i.str;
   output.add ":= 0;";
   output.add i.str;

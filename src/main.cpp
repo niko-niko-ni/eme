@@ -5,6 +5,8 @@
 #include "token.h"
 #include "lexer.h"
 #include "statement_parser.h"
+#include "ast.h"
+#include "ast_parser.h"
 
 int main() {
   try {
@@ -14,9 +16,14 @@ int main() {
     Token_Linked_List statements;
     printf("list of statements declared. Moving on to parsing statements...\n");
     parse_statements(&statements, tokens);
-    printf("statements parsed. moving onto printing all tokens...\n");
-    print_all_tokens_after(*statements.first, 0);
-    printf("all tokens printed \n");
+
+
+    print_all_tokens_after(*statements.first);
+
+    Ast_Node *root = parse_statements_to_ast(statements);
+
+    print_node(*root);
+
 
   } catch(const std::exception& e) {
     printf("Error: %s\n", e.what());

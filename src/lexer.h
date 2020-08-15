@@ -9,4 +9,4 @@
 
 Token_Linked_List lex_file(char filename[]);
 
-Token_Linked_List lex_string(char str[]);
+Token_Linked_List lex_string(char str[], int file_id);
