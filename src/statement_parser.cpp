@@ -33,12 +33,15 @@ bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list
       return true;
     } else if (current_token->type == token_syntax && (current_token->data.syntax == '(' || (current_token->data.syntax == '{' || current_token->data.syntax == '['))) {
       printf("parentheses found. parsing parentheses...\n");
+      std::cout << current_token->data.syntax << "\n";
       int nextNum = parse_parentheses(current_token);
       printf("parentheses parsed\n");
       Token *replace_token = current_token;
-      std::cout << nextNum << " tokens to skip. skipping tokens..." << '\n';
-      for(int i = 0; i < nextNum; i++) {
+      std::cout << nextNum << " tokens to skip. skipping tokens... starting at " << current_token->data.syntax << "\n";
+      for(int i = 0; i <= nextNum; i++) {
+        std::cout << replace_token->data.syntax << " token\n";
         replace_token = replace_token->next;
+
       }
       printf("next token found. deleting tokens...\n");
       current_token->next = replace_token;
@@ -54,41 +57,58 @@ bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list
 }
 
 int parse_parentheses(Token *token) {
-    printf("Starting parentheses parsing function. defining variables...\n");
+
     Token *current_token = token->next;
+    char parenthType = token->data.syntax;
     int ret = 1;
     Token_Linked_List sub_tokens;
-    printf("Variables defined. modifying token...\n");
+
     token->type = token_expr_parentheses; 
     token->data.sub_tokens = sub_tokens;
-    printf("token modified. defining eol...\n");
-    Token *eol = new Token();
-    printf("eol defines. modifying eol...\n");
-    eol->character = -1;
-    printf("eol character modified. modifying line...\n");
-    eol->line = -1;
-    printf("eol line modified. modifying type...\n");
-    eol->type = token_eol;
-    printf("eol type modified. iterating subtokens...\n");
-    sub_tokens.first = eol;
-    bool first = true;
 
+    Token *eol = new Token();
+
+    eol->character = -1;
+
+    eol->line = -1;
+
+    eol->type = token_eol;
+
+    bool first = true;
+    sub_tokens.first = eol;
     while (current_token->type != token_eol) {
-      if (current_token->type == token_syntax && ((current_token->data.syntax == ')' && token->data.syntax == '(') || ((current_token->data.syntax == '}' &&token->data.syntax == '{') || (current_token->data.syntax == ']' && token->data.syntax == '[')))) {
+      
+      bool parenthMatch = (current_token->data.syntax == ')' && parenthType == '(');
+      parenthMatch = parenthMatch || (current_token->data.syntax == '}' && parenthType == '{');
+      parenthMatch = parenthMatch || (current_token->data.syntax == ']' && parenthType == '[');
+      
+      if(parenthMatch) {
+        current_token->character = -1;
+        current_token->line = -1;
+        current_token->type = token_eol;
+        sub_tokens.last= current_token;
+        break;
+        
+      } else {
+        std::cout << "no parenthMatch at " << current_token->data.syntax << "\n";
+      }
+      std::cout << "inneriterate " << ret << " " << current_token->data.syntax << "\n";
+      if (current_token->data.syntax == '(' || (current_token->data.syntax == '[' || current_token->data.syntax == '{')) {
         ret = ret + parse_parentheses(current_token);
       }
       if (first) {
         sub_tokens.first = current_token;
+	first = false;
       } else {
         sub_tokens.last->next = current_token;
       }
-
+      sub_tokens.last = current_token;
+     
+      current_token = current_token->next;
       ret++;
-      current_token  = current_token->next;
-      printf("iteration complete. modifying token and sub_tokens...\n");
     }
+
     token->data.sub_tokens = sub_tokens;
-    sub_tokens.last = eol;
     return ret;
 }
 
