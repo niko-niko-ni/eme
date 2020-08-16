@@ -8,7 +8,7 @@
 bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list);
 
 //Recrusive function used to parse parentheses tokens
-int parse_parentheses(Token *token);
+int parse_grouping(Token *token);
 
 // Parses a list of semicolon-separated statements into a list of statement tokens.
 // Returns true for success, false for failure.
