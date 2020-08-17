@@ -3,6 +3,7 @@
 #include "ast.h"
 
 
+// @Leak @Incomplete memory leak here. After statements is used we're done with it and it can be deleted.
 Ast_Node *parse_statements_to_ast(Token_Linked_List statements) {
   // Just loops over a linked list of statements and converts each of them into an AST node, then places them into a root AST node and returns that.
   Ast_Node *root = new Ast_Node();

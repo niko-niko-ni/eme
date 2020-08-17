@@ -32,7 +32,7 @@ Token* syntax_token(char ch, int current_file_id, int current_line, int current_
   return token;
 }
 
-Token_Linked_List lex_stream(std::basic_iostream<char>* stream, int file_id) { // @Refactor: this function is a little janky, it's a finite state machine but some things are handled weirdly, like how boolean literals start out being processed as a symbol, or how there are some booleans like escaping_character which only matter if others are true.
+Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: this function is a little janky, it's a finite state machine but some things are handled weirdly, like how boolean literals start out being processed as a symbol, or how there are some booleans like escaping_character which only matter if others are true.
   Token_Linked_List tokens;
   tokens.first = new Token();
   tokens.first->character = 0;
@@ -53,7 +53,7 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, int file_id) { /
   int current_line = 1;
   int current_char = 0;
 
-  char ch;
+  unsigned char ch;
   while(*stream >> std::noskipws >> ch) {
 
     if(ch == '\n') {
@@ -66,6 +66,66 @@ Token_Linked_List lex_stream(std::basic_iostream<char>* stream, int file_id) { /
 
     if(reading_single_line_comment) continue;
 
+    // HANDLE UNICODE
+    // All we're going to do here is read through unicode characters. If they are some sort of apostrophe or quotation mark we convert them to their ASCII form, and if they're unrecognized we just print an error and skip them.
+    // If the most significant bit is 0, this is already in 7-bit ASCII.
+    // Otherwise, it's a multi-byte unicode character.
+    if(ch & (1 << 7)) {
+      unsigned char utf8_ch1 = ch;
+
+      if((utf8_ch1 & 0xe0) == 0xc0) {
+        // if the three most significant bits are 110 then the unicode character is 2 utf-8 characters wide.
+        char utf8_ch2;
+        *stream >> utf8_ch2;
+
+        char ub1 =  (utf8_ch1 << 3) & 0xe0;
+        char ub2 = ((utf8_ch1 << 6) & 0xc0) | (utf8_ch2 & 0x3f);
+        u16  u_char = (((u16)ub1)<<8) | ((u16)ub2);
+
+        switch(u_char) {
+          case 0x00B4: ch = '\''; break; //	´ - ACUTE ACCENT
+          default:
+            print_error_message("Unrecognized unicode character.", file_id, current_line, current_char);
+            continue;
+        }
+
+      } else if((utf8_ch1 & 0xf0) == 0xe0) {
+        // if the four most significant bits are 1110 then the unicode character is 3 utf-8 characters wide.
+        char utf8_ch2;
+        char utf8_ch3;
+        *stream >> utf8_ch2;
+        *stream >> utf8_ch3;
+
+        char ub1 = ((utf8_ch1 << 4) & 0xf0) | ((utf8_ch2 >> 2) & 0x0f);
+        char ub2 = ((utf8_ch2 << 6) & 0xc0) | (utf8_ch3 & 0x3f);
+        u16  u_char = (((u16)ub1)<<8) | ((u16)ub2);
+
+        switch(u_char) {
+          case 0x2018: ch = '\''; break; // ‘	- LEFT SINGLE QUOTATION MARK
+          case 0x2019: ch = '\''; break; // ’	- RIGHT SINGLE QUOTATION MARK
+          case 0x201C: ch = '"';  break; // “	- LEFT DOUBLE QUOTATION MARK
+          case 0x201D: ch = '"';  break; // ”	- RIGHT DOUBLE QUOTATION MARK
+          default:
+            print_error_message("Unrecognized unicode character.", file_id, current_line, current_char);
+            continue;
+        }
+
+      } else if((utf8_ch1 & 0xf8) == 0xf0) {
+        // if the five most significant bits are 11110 then the unicode character is 4 utf-8 characters wide.
+        char utf8_ch2;
+        char utf8_ch3;
+        char utf8_ch4;
+        *stream >> utf8_ch2;
+        *stream >> utf8_ch3;
+        *stream >> utf8_ch4;
+        print_error_message("Unrecognized unicode character.", file_id, current_line, current_char);
+        continue;
+      } else {
+        print_error_message("Unrecognized unicode character start.", file_id, current_line, current_char);
+        continue;
+      }
+    }
+    // Finished handling unicode, now onto actually processing the character.
 
 
     if(!reading_symbol && !reading_literal && !reading_string) {
