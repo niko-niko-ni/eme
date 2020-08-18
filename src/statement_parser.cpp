@@ -31,23 +31,25 @@ bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list
       return true;
     } else if (current_token->type == token_syntax && (current_token->data.syntax == '(' || (current_token->data.syntax == '{' || current_token->data.syntax == '['))) {
       int skip = parse_grouping(current_token);
+      std::cout << "skipping " << skip << " tokens\n";
+      Token *replace_token = current_token->data.sub_tokens.last->next;
+      //for(int i = 0; i < skip; i++) {
+        //replace_token = replace_token->next;
+      //  std::cout << "skipping to " << replace_token->line << "\n";
+      //}
+      std::cout << "skipped to " << replace_token->line << "\n";
 
-      Token *replace_token = current_token;
-      for(int i = 0; i < skip; i++) {
-        replace_token = replace_token->next;
-      }
-      std::cout << current_token->data.sub_tokens.first->line << " skipped \n";
       current_token->next = replace_token;
     }
 
     // @Incomplete: deal with if an end curly brace, bracket, or parentheses is encountered outside of its context
     current_token = current_token->next;
   }
+
   return false;
 }
 
 int parse_grouping(Token *token) {
-  printf("parsing found\n");
   char groupingType = token->data.syntax;
   if(groupingType == '(') {
     token->type = token_expr_parentheses;
@@ -67,14 +69,11 @@ int parse_grouping(Token *token) {
   int nestNum = 0;
   int ret = 1;
   while (curr->type != token_eol) {
-    std::cout << curr->data.syntax << " " << groupingType << "\n";
     //First, check for nested parentheses
     if (curr->type == token_syntax && (curr->data.syntax == '(' || (curr->data.syntax == '{' || curr->data.syntax == '['))) {
       nestNum++;
     } else if (curr->type == token_syntax && (curr->data.syntax == ')' || (curr->data.syntax == '}' || curr->data.syntax == ']'))) {
-      printf("close groupng found \n");
       bool closeGrouping = (curr->data.syntax ==')') && (groupingType == '(');
-      std::cout << closeGrouping << "\n";
       closeGrouping = closeGrouping || ((curr->data.syntax =='}') && (groupingType == '{'));
       closeGrouping = closeGrouping || ((curr->data.syntax ==']') && (groupingType == '['));
       if(closeGrouping) {
@@ -93,9 +92,7 @@ int parse_grouping(Token *token) {
       }
     }
     if(first) {
-      printf("test1 \n");
       sub_tokens.first = curr;
-      printf("test2 \n");
       first = false;
     } else {
       sub_tokens.last->next = curr;
@@ -106,22 +103,29 @@ int parse_grouping(Token *token) {
   }
   //Now need to give sub_tokens to parse_statements
   Token_Linked_List result_list;
-  bool failure = parse_statements(&result_list, sub_tokens);
-  if(failure) {
+
+  bool statementsParsed = parse_statements(&result_list, sub_tokens);
+
+  if(statementsParsed) {
     token->data.sub_tokens = result_list;
+    std::cout << groupingType << " statements" << "\n";
+
   } else {
     token->data.sub_tokens = sub_tokens;
+    std::cout << groupingType << " no statements" << "\n";
   }
-  //td::cout << result_list.first->line << " " << token->data.sub_tokens.first->line << " *&^\n";
   return ret;
 
 }
 
 bool parse_statements(Token_Linked_List *resulting_list, Token_Linked_List tokens) {
+  printf("recurse\n");
   bool resulting_list_initialized = false;
   Token_Linked_List parsed = tokens;
   while(parsed.first->type != token_eol) {
+
     Token *result = new Token();
+
     bool succeeded = parse_one_statement(result, &parsed);
 
     if(succeeded) {
@@ -134,9 +138,12 @@ bool parse_statements(Token_Linked_List *resulting_list, Token_Linked_List token
         resulting_list_initialized = true;
       }
     } else {
+      printf("false\n");
       return false; // @Incomplete: maybe put an error message here?
     }
   }
+
+  printf("compleet\n");
   return true;
 }
 /*
