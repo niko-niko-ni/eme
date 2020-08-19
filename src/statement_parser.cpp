@@ -84,7 +84,7 @@ void parse_grouping(Token *token) {
     if(first) {
       sub_tokens.first = curr;
       first = false;
-    } else if ({
+    } else {
       sub_tokens.last->next = curr;
     }
     sub_tokens.last = curr;
