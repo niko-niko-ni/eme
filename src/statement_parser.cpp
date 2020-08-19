@@ -66,8 +66,8 @@ void parse_grouping(Token *token) {
       bool parenthMatch = curr->data.syntax == ')' && (groupingType == '(');
       parenthMatch = parenthMatch || (curr->data.syntax == '}' && (groupingType == '{'));
       parenthMatch = parenthMatch || (curr->data.syntax == ']' && (groupingType == '['));
-      if (parenthMatch) {
-        if (nestNum == -1) {
+      if (nestNum == -1) {
+        if (parenthMatch) {
           token->next = curr->next;
           curr->character = -1;
           curr->line = -1;
@@ -75,16 +75,16 @@ void parse_grouping(Token *token) {
           sub_tokens.last->next = curr;
           sub_tokens.last = curr;
           break;
+        } else {
+          // @Incomplete throw error here. unexpected closing parentheses
         }
-      } else {
-        // @Incomplete throw error here. unexpected closing parentheses
       }
       
     }
     if(first) {
       sub_tokens.first = curr;
       first = false;
-    } else {
+    } else if ({
       sub_tokens.last->next = curr;
     }
     sub_tokens.last = curr;
