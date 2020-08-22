@@ -12,7 +12,7 @@ void print_token(Token token, int indentation) {
     indentation = 0;
   }
 
-  printf("%*c\bToken at line %i, character %i:\n", indentation, ' ', token.line, token.character);
+  printf("%*c\bToken at line %i, character %i, file %i:\n", indentation, ' ', token.line, token.character, token.file);
   switch(token.type) {
     case token_syntax: {
       printf("%*c\bSYNTAX %c\n\n", indentation, ' ', token.data.syntax);
@@ -52,7 +52,7 @@ void print_token(Token token, int indentation) {
       break;
     } case token_block_curly: {
       printf("%*c\bBLOCK_CURLY:\n\n", indentation, ' ');
-      
+
       uint new_indentation = is_using_indentation ? indentation+INDENTATION_INCREASE : -1;
       print_all_tokens_after(*token.data.sub_tokens.first, new_indentation);
       break;

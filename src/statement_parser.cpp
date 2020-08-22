@@ -24,6 +24,7 @@ bool parse_one_statement(Token *result, Token_Linked_List *remaining_tokens_list
 
       result->character = sub_tokens.first->character;
       result->line = sub_tokens.first->line;
+      result->file = sub_tokens.first->file;
       result->type = token_statement;
 
 
@@ -54,6 +55,7 @@ void parse_grouping(Token *token) {
   Token *eol = new Token();
   eol->character = -1;
   eol->line = -1;
+  eol->file = token->file;
   eol->type = token_eol;
   bool first = true;
   sub_tokens.first = eol;
@@ -79,7 +81,7 @@ void parse_grouping(Token *token) {
           // @Incomplete throw error here. unexpected closing parentheses
         }
       }
-      
+
     }
     if(first) {
       sub_tokens.first = curr;
@@ -102,7 +104,7 @@ void parse_grouping(Token *token) {
   } else {
     token->data.sub_tokens = sub_tokens;
   }
- 
+
 }
 
 bool parse_statements(Token_Linked_List *resulting_list, Token_Linked_List tokens) {

@@ -8,6 +8,9 @@ Ast_Node *parse_statements_to_ast(Token_Linked_List statements) {
   // Just loops over a linked list of statements and converts each of them into an AST node, then places them into a root AST node and returns that.
   Ast_Node *root = new Ast_Node();
   root->type = node_root;
+  root->line = statements.first->line;
+  root->character = statements.first->character;
+  root->file = statements.first->file;
   Token *current_statement = statements.first;
 
   bool sub_nodes_initialized = false;
@@ -40,14 +43,21 @@ Ast_Node *parse_statements_to_ast(Token_Linked_List statements) {
   return root;
 }
 
-Ast_Node *ast_node_from_tokens(Token_Linked_List tokens) {
+Ast_Node *ast_node_from_tokens(Token_Linked_List tokens, int line, int character, int file) {
   Ast_Node *result = new Ast_Node();
   result->type = node_token_list;
   result->data.sub_tokens = tokens;
+  result->line = line;
+  result->character = character;
+  result->file = file;
   return result;
 }
 
 Ast_Node *parse_statement_to_ast(Token statement) {
+
+  int line = statement.line;
+  int character = statement.character;
+  int file = statement.file;
 
   Token_Linked_List sub_tokens = statement.data.sub_tokens;
   Token *current_token = sub_tokens.first;
@@ -56,7 +66,7 @@ Ast_Node *parse_statement_to_ast(Token statement) {
   while(current_token->type != token_syntax || !(current_token->data.syntax == '=' || current_token->data.syntax == ':')) {
     if(current_token->type == token_eol) {
       // If we ran into the end of the sub-token list without encountering an = or :, then the statement is just an expression.
-      return ast_node_from_tokens(sub_tokens);
+      return ast_node_from_tokens(sub_tokens, line, character, file);
     }
 
     current_token = current_token->next;
@@ -84,8 +94,11 @@ Ast_Node *parse_statement_to_ast(Token statement) {
 
         Ast_Node *decl = new Ast_Node();
         decl->type = node_decl;
-        decl->data.decl.identifier = ast_node_from_tokens(identifier_portion);
-        decl->data.decl.type = ast_node_from_tokens(type_portion);
+        decl->data.decl.identifier = ast_node_from_tokens(identifier_portion, line, character, file);
+        decl->data.decl.type = ast_node_from_tokens(type_portion, line, character, file);
+        decl->line = line;
+        decl->character = character;
+        decl->file = file;
         return decl;
       }
       current_token = current_token->next;
@@ -104,9 +117,12 @@ Ast_Node *parse_statement_to_ast(Token statement) {
 
     Ast_Node *decl = new Ast_Node();
     decl->type = node_decl_with_set;
-    decl->data.decl_with_set.identifier = ast_node_from_tokens(identifier_portion);
-    decl->data.decl_with_set.type = ast_node_from_tokens(type_portion);
-    decl->data.decl_with_set.value = ast_node_from_tokens(value_portion);
+    decl->data.decl_with_set.identifier = ast_node_from_tokens(identifier_portion, line, character, file);
+    decl->data.decl_with_set.type = ast_node_from_tokens(type_portion, line, character, file);
+    decl->data.decl_with_set.value = ast_node_from_tokens(value_portion, line, character, file);
+    decl->line = line;
+    decl->character = character;
+    decl->file = file;
     return decl;
 
   } else {
@@ -117,8 +133,11 @@ Ast_Node *parse_statement_to_ast(Token statement) {
 
     Ast_Node *statement = new Ast_Node();
     statement->type = node_set_statement;
-    statement->data.statement.identifier = ast_node_from_tokens(identifier_portion);
-    statement->data.statement.value = ast_node_from_tokens(value_portion);
+    statement->data.statement.identifier = ast_node_from_tokens(identifier_portion, line, character, file);
+    statement->data.statement.value = ast_node_from_tokens(value_portion, line, character, file);
+    statement->line = line;
+    statement->character = character;
+    statement->file = file;
 
     return statement;
   }

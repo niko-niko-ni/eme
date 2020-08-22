@@ -34,8 +34,9 @@ struct Token_Linked_List {
 
 // Linked list of tokens
 struct Token {
-  int character;
-  int line;
+  int character = -1;
+  int line = -1;
+  int file = -1;
   Token_Type type;
 
   union {

@@ -10,7 +10,6 @@
 #include "errors.h"
 #include "files.h"
 
-// @Incomplete MAJOR PROBLEM: We aren't adding file_id data to tokens yet! This is because it might cause problems interfering with literals WIP meta-token parser. file_id data is already used in error messages, just update token and AST objects to include the data, as well as make sure it is set wherever the line and character are set.
 
 bool is_valid_symbol_start_char(char ch) {
   if(isalpha(ch)) return true;
@@ -49,6 +48,7 @@ Token* syntax_token(char ch, int current_file_id, int current_line, int current_
   token->type = token_syntax; // @Incomplete: handle multiple literal types
   token->line = current_line;
   token->character = current_char;
+  token->file = current_file_id;
   token->data.syntax = ch;
   return token;
 }
@@ -58,6 +58,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
   tokens.first = new Token();
   tokens.first->character = 0;
   tokens.first->line = 0;
+  tokens.first->file = file_id;
   tokens.first->type = token_eol;
 
   tokens.last = tokens.first;
@@ -194,6 +195,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
           Token *token = new Token();
           token->type = token_literal_bool;
           token->line = current_line;
+          token->file = file_id;
           token->character = current_string_start_char;
           token->data.literal_bool = current_string->compare("true");
 
@@ -204,6 +206,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
           Token *token = new Token();
           token->type = token_symbol;
           token->line = current_line;
+          token->file = file_id;
           token->character = current_string_start_char;
           token->data.symbol = 0;
 
@@ -266,6 +269,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
           Token *token = new Token();
           token->type = token_literal_int; // @Incomplete: handle multiple literal types
           token->line = current_line;
+          token->file = file_id;
           token->character = current_string_start_char;
           try {
             token->data.literal_int = std::stoi(*current_string);
@@ -292,6 +296,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
         Token *token = new Token();
         token->character = current_string_start_char;
         token->line = current_string_start_line;
+        token->file = file_id;
         token->type = token_literal_string;
         token->data.literal_string = current_string;
 
@@ -314,6 +319,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
     end_token->type = token_eol;
     end_token->line = -1;
     end_token->character = -1;
+    end_token->file = file_id;
 
     tokens.last->next = end_token;
     tokens.last = end_token;

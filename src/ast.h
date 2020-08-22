@@ -20,6 +20,10 @@ struct Ast_Node_Linked_List {
 struct Ast_Node {
   Ast_Node_Type type;
 
+  int line = -1;
+  int character = -1;
+  int file = -1;
+
   union {
     struct {
       Ast_Node *identifier;

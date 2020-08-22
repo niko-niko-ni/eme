@@ -6,6 +6,7 @@ const uint INDENT_INCREASE = 4;
 const uint HALF_INCREASE = 2;
 
 void print_node(Ast_Node node, int indentation) {
+  printf("%*c\bAt line %i, character %i, file %i:\n", indentation, ' ', node.line, node.character, node.file);
   switch(node.type) {
     case node_set_statement:
       printf("%*c\bAST node set_statement:\n\n", indentation, ' ');
