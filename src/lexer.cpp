@@ -23,7 +23,6 @@ bool is_valid_symbol_start_char(char ch) {
     case '\\': return true;
     case '*': return true;
     case '^': return true;
-    case '#': return true;
     case '$': return true;
     case '@': return true;
     case '~': return true;
