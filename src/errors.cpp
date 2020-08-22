@@ -5,7 +5,6 @@
 
 
 // @Incomplete Possibly add red color to error messages?
-// @Incomplete Make sure that every error message that should use print_error_message is using it. Just search for all printfs to see if any should be calling print_error_message. Not done because it might interfere with literal's work.
 void print_error_message(char *message, int file_id, int line, int character) {
   if(file_id >= 0 && file_id < filenames.size()) {
     print_line_in_file(file_id, line);

@@ -1,6 +1,7 @@
 #include "ast_parser.h"
 #include "token.h"
 #include "ast.h"
+#include "errors.h"
 
 
 // @Leak @Incomplete memory leak here. After statements is used we're done with it and it can be deleted.
@@ -16,9 +17,8 @@ Ast_Node *parse_statements_to_ast(Token_Linked_List statements) {
   bool sub_nodes_initialized = false;
   while(current_statement->type != token_eol) {
     if(current_statement->type != token_statement) {
-      printf("Error in parse_statements_to_ast: the list of statements passed contained a token which was not of type 'token_statement'.\n");
+      print_error_message("Error in parse_statements_to_ast: the list of statements passed contained a token which was not of type 'token_statement'.\n", current_statement->file, current_statement->line, current_statement->character);
       print_token(*current_statement);
-      printf("Exiting.");
       exit(1);
     }
     Ast_Node *result = parse_statement_to_ast(*current_statement);

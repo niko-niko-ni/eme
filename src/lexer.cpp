@@ -274,7 +274,7 @@ Token_Linked_List lex_stream(std::istream *stream, int file_id) { // @Refactor: 
           try {
             token->data.literal_int = std::stoi(*current_string);
           } catch(...) {
-            printf("Error converting assumed int literal (because it starts with a digit) to int.", file_id, current_line, current_string_start_char);
+            print_error_message("Error converting assumed int literal (because it starts with a digit) to int.", file_id, current_line, current_string_start_char);
           }
 
           // add token
