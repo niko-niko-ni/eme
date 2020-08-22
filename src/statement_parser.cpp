@@ -98,11 +98,9 @@ void parse_grouping(Token *token) {
 
   if(statementsParsed) {
     token->data.sub_tokens = result_list;
-    std::cout << groupingType << " statements" << "\n";
 
   } else {
     token->data.sub_tokens = sub_tokens;
-    std::cout << groupingType << " no statements" << "\n";
   }
  
 }
