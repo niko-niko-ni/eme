@@ -12,12 +12,33 @@
 
 // @Incomplete MAJOR PROBLEM: We aren't adding file_id data to tokens yet! This is because it might cause problems interfering with literals WIP meta-token parser. file_id data is already used in error messages, just update token and AST objects to include the data, as well as make sure it is set wherever the line and character are set.
 
-bool is_valid_symbol_char(char ch) {
-  return isalpha(ch) || isdigit(ch) || ch == '_';
+bool is_valid_symbol_start_char(char ch) {
+  if(isalpha(ch)) return true;
+
+  switch(ch) {
+    case '_': return true;
+    case '+': return true;
+    case '-': return true;
+    case '/': return true;
+    case '?': return true;
+    case '\\': return true;
+    case '*': return true;
+    case '^': return true;
+    case '#': return true;
+    case '$': return true;
+    case '@': return true;
+    case '~': return true;
+    case '|': return true;
+    case '%': return true;
+    case '!': return true;
+    case '&': return true;
+  }
+
+  return false;
 }
 
-bool is_valid_symbol_start_char(char ch) {
-  return isalpha(ch) || ch == '_';
+bool is_valid_symbol_char(char ch) {
+  return is_valid_symbol_start_char(ch) || isdigit(ch);
 }
 
 Token* syntax_token(char ch, int current_file_id, int current_line, int current_char) {
