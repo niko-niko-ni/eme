@@ -8,6 +8,7 @@
 #include "ast.h"
 #include "ast_parser.h"
 
+
 int main() {
   try {
     printf("main block started. moving on to lexing...\n");
