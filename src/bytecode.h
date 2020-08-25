@@ -14,16 +14,22 @@ enum BytecodeCommandType {
 };
 enum BytecodeCommandDataType {
   sub_isntrs,
-  op_2_addrs //add more here
+  op_2_addrs //add more operations here
 };
-struct BytecodeProcedure;
-struct BytecodeInstruction;
+struct BytecodeProcedure; //contains everything
+struct BytecodeInstruction; //contains individual instructions
+struct ConditionalCommandData;
 
+struct ConditionalCommandData {
+  int condition;
+  ByteCodeInstruction[] sub_instrs;
+}
 struct BytecodeInstruction {
-  BytecodeCommandType type;
+  BytecodeCommandType type; //operation type
   union {
-    ByteCodeInstruction[] sub_instrs;
-    int[] arguments;
+    ByteCodeInstruction[] sub_instrs,
+    int[] arguments,
+    ConditionalCommandData conditional //special case for if statemends
   } sub_data;
 
 }
