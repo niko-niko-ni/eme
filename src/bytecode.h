@@ -27,20 +27,22 @@ struct BytecodeInstructionLinkedList {
 };
 struct ConditionalCommandData {
   int condition;
-  BytecodeInstructions subInstructions;
+  BytecodeInstructionLinkedList subInstructions;
 };
 
 struct BytecodeInstruction {
   BytecodeCommandType type; //operation type
   union {
-    BytecodeInstructions subInstructions,
-    int[] arguments,
-    ConditionalCommandData conditional //special case for if statemends
+    BytecodeInstructionLinkedList subInstructions;
+    int arguments[];
+    ConditionalCommandData conditional;
+    //special case for if statemends
   } sub_data;
+  BytecodeInstruction *next;
 
 };
 struct BytecodeProcedure {
   int id;
+  BytecodeInstructionLinkedList body;
   Type_Info bytecodeArguments[];
-  BytecodeInstructions body;
 };

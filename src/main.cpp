@@ -24,9 +24,6 @@ int main() {
 
     print_node(*root);
 
-    BytecodeProcedure procedure;
-    procedure.id = 7;
-    std::cout << procedure << "\n";
 
   } catch(const std::exception& e) {
     printf("Error: %s\n", e.what());
