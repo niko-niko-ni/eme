@@ -7,6 +7,7 @@
 #include "statement_parser.h"
 #include "ast.h"
 #include "ast_parser.h"
+#include "bytecode.h"
 
 int main() {
   try {
@@ -23,6 +24,9 @@ int main() {
 
     print_node(*root);
 
+    BytecodeProcedure procedure;
+    procedure.id = 7;
+    std::cout << procedure << "\n";
 
   } catch(const std::exception& e) {
     printf("Error: %s\n", e.what());

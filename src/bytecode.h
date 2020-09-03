@@ -18,23 +18,29 @@ enum BytecodeCommandDataType {
 };
 struct BytecodeProcedure; //contains everything
 struct BytecodeInstruction; //contains individual instructions
+struct BytecodeInstructionLinkedList;
 struct ConditionalCommandData;
 
+struct BytecodeInstructionLinkedList {
+  BytecodeInstruction *first;
+  BytecodeInstruction *last;
+};
 struct ConditionalCommandData {
   int condition;
-  ByteCodeInstruction[] sub_instrs;
-}
+  BytecodeInstructions subInstructions;
+};
+
 struct BytecodeInstruction {
   BytecodeCommandType type; //operation type
   union {
-    ByteCodeInstruction[] sub_instrs,
+    BytecodeInstructions subInstructions,
     int[] arguments,
     ConditionalCommandData conditional //special case for if statemends
   } sub_data;
 
-}
+};
 struct BytecodeProcedure {
   int id;
-  Type_Info[] args;
-  BytecodeInstruction[] body;
-}
+  Type_Info bytecodeArguments[];
+  BytecodeInstructions body;
+};
