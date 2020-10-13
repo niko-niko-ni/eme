@@ -3,6 +3,7 @@
 #include "types.h"
 #include "ast.h"
 #include <string>
+#include <iostream>
 
 enum BytecodeCommandType {
   if_command,
@@ -34,7 +35,7 @@ struct BytecodeInstruction {
   BytecodeCommandType type; //operation type
   union {
     BytecodeInstructionLinkedList subInstructions;
-    int arguments[];
+    std::vector<int> arguments;
     ConditionalCommandData conditional;
     //special case for if statemends
   } sub_data;
@@ -46,3 +47,5 @@ struct BytecodeProcedure {
   BytecodeInstructionLinkedList body;
   Type_Info bytecodeArguments[];
 };
+void execProcedure(const BytecodeProcedure &program);
+

@@ -23,7 +23,10 @@ int main() {
     Ast_Node *root = parse_statements_to_ast(statements);
 
     print_node(*root);
-
+	BytecodeProcedure proc;
+	proc.id = 0;
+	
+	execProcedure(proc);
 
   } catch(const std::exception& e) {
     printf("Error: %s\n", e.what());
