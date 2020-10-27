@@ -4,7 +4,7 @@ INCLUDESDIR = include
 TESTDIR = tests
 
 #put source files here
-SOURCES = main.cpp ast.cpp ast_parser.cpp errors.cpp files.cpp lexer.cpp statement_parser.cpp token.cpp symbol.cpp
+SOURCES = main.cpp ast.cpp ast_parser.cpp errors.cpp files.cpp lexer.cpp statement_parser.cpp token.cpp symbol.cpp bytecode.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 TARGET = eme
 
@@ -44,6 +44,9 @@ files.o: $(SRCDIR)/files.cpp $(SRCDIR)/files.cpp
 	$(CXX) $(CXXFLAGS) -c -o $(OBJSDIR)/files.o $(SRCDIR)/files.cpp
 symbol.o: $(SRCDIR)/symbol.cpp $(SRCDIR)/symbol.cpp
 	$(CXX) $(CXXFLAGS) -c -o $(OBJSDIR)/symbol.o $(SRCDIR)/symbol.cpp
+bytecode.o: $(SRCDIR)/bytecode.cpp $(SRCDIR)/bytecode.cpp
+	$(CXX) $(CXXFLAGS) -c -o $(OBJSDIR)/bytecode.o $(SRCDIR)/bytecode.cpp
+
 # Make the test_runner
 test: $(TESTS) 
 	$(CXX) $(CXXFLAGS) -Isrc/ -o test_runner $^
